@@ -23,7 +23,6 @@ engine = sqlalchemy.create_engine(url, echo=False)
 Base.metadata.create_all(engine)
 SessionMaker = sessionmaker(bind=engine)
 
-session_not_safe = SessionMaker()
 jenny = SessionJenny(SessionMaker)
 
 if not jenny.session.query(Data).all():

@@ -3,7 +3,6 @@ import threading
 
 from sqlalchemy import Integer, Column
 from sqlalchemy.orm.session import sessionmaker
-from sqlalchemy.orm.scoping import scoped_session
 import sqlalchemy.ext.declarative
 
 from sqlalchemy_rope import SessionJenny
@@ -24,7 +23,6 @@ engine = sqlalchemy.create_engine(url, echo=False)
 Base.metadata.create_all(engine)
 SessionMaker = sessionmaker(bind=engine)
 
-session_not_safe = SessionMaker()
 jenny = SessionJenny(SessionMaker)
 
 if not jenny.session.query(Data).all():

@@ -28,7 +28,6 @@ class SessionJenny(scoped_session):
         super().__init__(session_factory, scopefunc)
 
         self._ropes = WeakValueDictionary()
-        self._rope_frames = WeakKeyDictionary()
         self._rope_name_callback = None
         self._finalizers = dict()
 
@@ -39,12 +38,12 @@ class SessionJenny(scoped_session):
                 raise TypeError("return value of rope_name_callback must be a str")
         return "session{}:{}".format(id(self), current_thread().ident)
 
-    def finalizer(self, rope_name):
+    def _finalizer(self, rope_name):
         if rope_name in self._ropes:
             del self._ropes[rope_name]
         if rope_name in self._finalizers:
             del self._finalizers[rope_name]
-        self.remove()
+        self.remove(rope_name)
 
     @property
     def rope_name_callback(self):
@@ -58,14 +57,14 @@ class SessionJenny(scoped_session):
 
     def set_rope(self, frame=None):
         if not frame:
-            frame = self.outer_frame(inspect.getouterframes(inspect.currentframe()))
+            frame = self._outer_frame(inspect.getouterframes(inspect.currentframe()))
 
         rope = SessionRope(self.registry)
         self._ropes[self.create_rope_name()] = rope
-        self._finalizers[self.create_rope_name()] = finalize(rope, self.finalizer, self.create_rope_name())
+        self._finalizers[self.create_rope_name()] = finalize(rope, self._finalizer, self.create_rope_name())
         frame.f_locals[self.create_rope_name()] = rope
 
-    def outer_frame(self, frame):
+    def _outer_frame(self, frame):
         for f in frame:
             code = f.frame.f_code
             name = code.co_name
@@ -76,7 +75,7 @@ class SessionJenny(scoped_session):
     def rope(self):
         if self.create_rope_name() in self._ropes:
             rope = self._ropes[self.create_rope_name()]
-            self._finalizers[self.create_rope_name()] = finalize(rope, self.finalizer, self.create_rope_name())
+            self._finalizers[self.create_rope_name()] = finalize(rope, self._finalizer, self.create_rope_name())
             return self._ropes[self.create_rope_name()]
 
         self.set_rope()
@@ -90,9 +89,10 @@ class SessionJenny(scoped_session):
         if self.registry.has():
             self.registry().close()
         self.registry.clear()
-        if rope_name:
-            try:
-                del self._ropes[rope_name]
-                del self._finalizers[rope_name]
-            except KeyError:
-                warn("There is no Session instance.")
+        if not rope_name:
+            rope_name = self.create_rope_name()
+        try:
+            del self._ropes[rope_name]
+            del self._finalizers[rope_name]
+        except KeyError:
+            warn("There is no Session instance.")

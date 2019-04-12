@@ -1,0 +1,7 @@
+.idea
+.pypirc
+test
+sqlalchemy_rope/__pycache__
+example/templates
+example/static
+example/data.db

@@ -1,15 +1,14 @@
 """
-Responder-Login
+SQLAlchemy-Rope
 -----------
-Responder-Login is a simple Login/Logout management.
-The basic structure of this is based on Flask-Login
+This module provides easy wrapper for thread-local SQLAlchemy session
 """
 
 from setuptools import setup
 from os import path
 
 about = {}
-with open("responder_login/__about__.py") as f:
+with open("sqlalchemy_rope/__about__.py") as f:
     exec(f.read(), about)
 
 here = path.abspath(path.dirname(__file__))
