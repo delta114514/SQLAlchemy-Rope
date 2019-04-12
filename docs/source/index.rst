@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-The Simple Login/Logout Management for Responder
-================================================
+The Simple Thread-local Session Maker
+=====================================
 |image1| |image2|
 
 .. |image1| image:: https://img.shields.io/pypi/v/sqlalchemy-rope.svg
