@@ -18,6 +18,7 @@ SQLAlchemy-Rope provides simple thread-local session maker for SQLAlchemy.
 `Github <https://github.com/delta114514/SQLAlchemy-Rope>`_ --
 `Simple example <https://github.com/delta114514/SQLAlchemy-Rope/blob/master/example/example_2.py>`_
 
+   I recommend to use :code:`sqlalchemy.orm.scoping.scoped_session` explicitly. There is some possibility of :code:`SessionJenny` dirty your code. This library is only for lazy people just like me.
 
 .. contents::
    :local:

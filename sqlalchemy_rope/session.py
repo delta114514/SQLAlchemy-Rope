@@ -93,6 +93,5 @@ class SessionJenny(scoped_session):
             rope_name = self.create_rope_name()
         try:
             del self._ropes[rope_name]
-            del self._finalizers[rope_name]
         except KeyError:
             warn("There is no Session instance.")
