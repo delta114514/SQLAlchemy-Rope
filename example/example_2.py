@@ -1,4 +1,5 @@
 import responder
+import threading
 
 from sqlalchemy import Integer, Column
 from sqlalchemy.orm.session import sessionmaker
@@ -32,9 +33,16 @@ if not jenny.session.query(Data).all():
 
 @api.route("/")
 def index(req, resp):
+
+    print("-" * 10, "enter", "-" * 10)
+    print("thread:", threading.current_thread().ident)
+    print("session id:", id(jenny.session))
+    print("session id from another scope", session_id())
     data = jenny.session.query(Data).first()
     data.count += 1
     jenny.session.commit()
+    print(locals())
+    print("-" * 10, "exit", "-" * 10)
     resp.content = str(data.count)
 
 

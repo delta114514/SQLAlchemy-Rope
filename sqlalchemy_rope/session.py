@@ -1,9 +1,9 @@
 import inspect
 
 from threading import current_thread
-from weakref import finalize, WeakValueDictionary, WeakKeyDictionary
+from weakref import WeakValueDictionary
 
-from sqlalchemy.orm.scoping import (scoped_session, warn)
+from sqlalchemy.orm.scoping import scoped_session, warn
 
 
 class SessionRope:
@@ -29,7 +29,6 @@ class SessionJenny(scoped_session):
 
         self._ropes = WeakValueDictionary()
         self._rope_name_callback = None
-        self._finalizers = dict()
 
     def create_rope_name(self):
         if self.rope_name_callback:
@@ -37,13 +36,6 @@ class SessionJenny(scoped_session):
             if not isinstance(name, str):
                 raise TypeError("return value of rope_name_callback must be a str")
         return "session{}:{}".format(id(self), current_thread().ident)
-
-    def _finalizer(self, rope_name):
-        if rope_name in self._ropes:
-            del self._ropes[rope_name]
-        if rope_name in self._finalizers:
-            del self._finalizers[rope_name]
-        self.remove(rope_name)
 
     @property
     def rope_name_callback(self):
@@ -61,7 +53,6 @@ class SessionJenny(scoped_session):
 
         rope = SessionRope(self.registry)
         self._ropes[self.create_rope_name()] = rope
-        self._finalizers[self.create_rope_name()] = finalize(rope, self._finalizer, self.create_rope_name())
         frame.f_locals[self.create_rope_name()] = rope
 
     def _outer_frame(self, frame):
@@ -74,8 +65,6 @@ class SessionJenny(scoped_session):
     @property
     def rope(self):
         if self.create_rope_name() in self._ropes:
-            rope = self._ropes[self.create_rope_name()]
-            self._finalizers[self.create_rope_name()] = finalize(rope, self._finalizer, self.create_rope_name())
             return self._ropes[self.create_rope_name()]
 
         self.set_rope()

@@ -1,7 +1,7 @@
 __title__ = "SQLAlchemy-Rope"
 __description__ = "Wrapper for SQLAlchemy to Thread-local use"
 __url__ = "https://github.com/delta114514/SQLAlchemy-Rope"
-__version_info__ = ("0", "0", "2")
+__version_info__ = ("0", "1", "0")
 __version__ = ".".join(__version_info__)
 __author__ = "Yamato Nagata"
 __author_email__ = "chickenwingswillfly@gmail.com"

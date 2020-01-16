@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: SQLAlchemy-Rope
-Version: 0.0.1
+Version: 0.0.2
 Summary: Wrapper for SQLAlchemy to Thread-local use
 Home-page: https://github.com/delta114514/SQLAlchemy-Rope
 Author: Yamato Nagata
